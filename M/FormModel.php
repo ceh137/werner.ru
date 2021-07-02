@@ -66,11 +66,7 @@ class FormModel extends OrderModelDB
 
     }
 
-    public function MakeApplication($str_result) {
-
-
-        $res = json_decode($str_result);
-
-        return $this->get_ready_args($res);
+    public function MakeApplication($data) {
+        return $this->get_ready_args($data);
     }
 }

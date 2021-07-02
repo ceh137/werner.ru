@@ -735,6 +735,8 @@ changeCitiesbtn.addEventListener('click', () => {
     let city2 = toCity.value;
     fromCity.value = city2;
     toCity.value = city1;
+    CalculatorEco();
+    CalculateExpress();
 })
 let cities = [
     fromCity,

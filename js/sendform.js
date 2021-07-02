@@ -939,15 +939,15 @@ function CalculateExpress(res) {
                 let insurance = 0
                 if (priceType() == "minP" || priceType() == "single" || priceType() == "docs") {
                     insurance = +optPrices['insurance'];
-                    price += insurance;
+
 
                 } else {
                     if (optPrices['insPerKG'] * weight < minInsurance) {
                         insurance = minInsurance;
-                        price += insurance;
+                        //price += insurance;
                     } else {
                         insurance = +optPrices['insPerKG'] * weight;
-                        price += insurance;
+                        //price += insurance;
 
                     }
                 }
@@ -957,8 +957,9 @@ function CalculateExpress(res) {
                     if (insurance < minInsurance) {
                         insurance = minInsurance;
                     }
-                    price += insurance;
+
                 }
+                price += insurance;
                 for (let check of PayIns) {
                     check.setAttribute('value', insurance);
                     check.labels.forEach(label => {
@@ -1421,7 +1422,7 @@ function CalculatorEco(res) {
                 let insurance = 0
                 if (priceType() == "minP" || priceType() == "single" || priceType() == "docs") {
                     insurance = +optPrices['insurance'];
-                    price += insurance;
+
 
                 } else {
                     if (optPrices['insPerKG'] * weight < minInsurance) {
@@ -1446,6 +1447,7 @@ function CalculatorEco(res) {
                         label.innerText = 'Зa страховку ' + insurance+ ' руб.';
                     })
                 }
+                price += insurance;
                 document.getElementById('insurance_price').value = insurance;
 
                 //insuranceLabel.innerText = "Страховка (" + insurance.toLocaleString('ru-Ru') + " руб.)";
@@ -2046,7 +2048,7 @@ for (let check of Sender) {
         for (let ch of Sender) {
             if (ch.checked==true) {
                 arr.push(ch);
-                document.getElementById('INNsender').setAttribute('required', '');
+                //document.getElementById('INNsender').setAttribute('required', '');
                 document.getElementById('FIOsender').setAttribute('required', '');
                 document.getElementById('Telsender').setAttribute('required', '');
                 document.getElementById('Emailsender').setAttribute('required', '');
@@ -2059,7 +2061,7 @@ for (let check of Sender) {
             }
             console.log(arr);
             if (arr.length == 0) {
-                document.getElementById('INNsender').removeAttribute('required');
+                //document.getElementById('INNsender').removeAttribute('required');
                 document.getElementById('FIOsender').removeAttribute('required');
                 document.getElementById('Telsender').removeAttribute('required');
                 document.getElementById('Emailsender').removeAttribute('required');
@@ -2089,7 +2091,7 @@ for (let check of Receiver) {
         for (let ch of Receiver) {
             if (ch.checked==true) {
                 arr.push(ch);
-                document.getElementById('INNreceiver').setAttribute('required', '');
+                //document.getElementById('INNreceiver').setAttribute('required', '');
                 document.getElementById('FIOreceiver').setAttribute('required', '');
                 document.getElementById('Telreceiver').setAttribute('required', '');
                 document.getElementById('Emailreceiver').setAttribute('required', '');
@@ -2102,7 +2104,7 @@ for (let check of Receiver) {
             }
             console.log(arr);
             if (arr.length == 0) {
-                document.getElementById('INNreceiver').removeAttribute('required');
+                //document.getElementById('INNreceiver').removeAttribute('required');
                 document.getElementById('FIOreceiver').removeAttribute('required');
                 document.getElementById('Telreceiver').removeAttribute('required');
                 document.getElementById('Emailreceiver').removeAttribute('required');
@@ -2131,7 +2133,7 @@ for (let check of ThirdParty) {
         for (let ch of ThirdParty) {
             if (ch.checked == true) {
                 arr.push(ch);
-                document.getElementById('INN3dparty').setAttribute('required', '');
+                //document.getElementById('INN3dparty').setAttribute('required', '');
                 document.getElementById('FIO3dparty').setAttribute('required', '');
                 document.getElementById('Tel3dparty').setAttribute('required', '');
                 document.getElementById('Email3dparty').setAttribute('required', '');
@@ -2144,7 +2146,7 @@ for (let check of ThirdParty) {
             }
             console.log(arr);
             if (arr.length == 0) {
-                document.getElementById('INN3dparty').removeAttribute('required');
+                //document.getElementById('INN3dparty').removeAttribute('required');
                 document.getElementById('FIO3dparty').removeAttribute('required');
                 document.getElementById('Tel3dparty').removeAttribute('required');
                 document.getElementById('Email3dparty').removeAttribute('required');
@@ -2171,7 +2173,7 @@ document.getElementById('PayAllSender').addEventListener('click', () => {
     let arr = [];
     if (document.getElementById('PayAllSender').checked==true) {
         arr.push(document.getElementById('PayAllSender'));
-        document.getElementById('INNsender').setAttribute('required', '');
+        //document.getElementById('INNsender').setAttribute('required', '');
         document.getElementById('FIOsender').setAttribute('required', '');
         document.getElementById('Telsender').setAttribute('required', '');
         document.getElementById('Emailsender').setAttribute('required', '');
@@ -2184,7 +2186,7 @@ document.getElementById('PayAllSender').addEventListener('click', () => {
     }
     console.log(arr);
     if (arr.length == 0) {
-        document.getElementById('INNsender').removeAttribute('required');
+        //document.getElementById('INNsender').removeAttribute('required');
         document.getElementById('FIOsender').removeAttribute('required');
         document.getElementById('Telsender').removeAttribute('required');
         document.getElementById('Emailsender').removeAttribute('required');
@@ -2195,7 +2197,7 @@ document.getElementById('PayAllReceiver').addEventListener('click', () => {
     let arr = [];
     if (document.getElementById('PayAllReceiver').checked==true) {
         arr.push(document.getElementById('PayAllReceiver'));
-        document.getElementById('INNreceiver').setAttribute('required', '');
+        //document.getElementById('INNreceiver').setAttribute('required', '');
         document.getElementById('FIOreceiver').setAttribute('required', '');
         document.getElementById('Telreceiver').setAttribute('required', '');
         document.getElementById('Emailreceiver').setAttribute('required', '');
@@ -2208,7 +2210,7 @@ document.getElementById('PayAllReceiver').addEventListener('click', () => {
     }
     console.log(arr);
     if (arr.length == 0) {
-        document.getElementById('INNreceiver').removeAttribute('required');
+        //document.getElementById('INNreceiver').removeAttribute('required');
         document.getElementById('FIOreceiver').removeAttribute('required');
         document.getElementById('Telreceiver').removeAttribute('required');
         document.getElementById('Emailreceiver').removeAttribute('required');
@@ -2219,7 +2221,7 @@ document.getElementById('PayAll3dparty').addEventListener('click', () => {
     let arr = [];
     if (document.getElementById('PayAll3dparty').checked == true) {
         arr.push(document.getElementById('PayAll3dparty'));
-        document.getElementById('INN3dparty').setAttribute('required', '');
+        //document.getElementById('INN3dparty').setAttribute('required', '');
         document.getElementById('FIO3dparty').setAttribute('required', '');
         document.getElementById('Tel3dparty').setAttribute('required', '');
         document.getElementById('Email3dparty').setAttribute('required', '');
@@ -2232,7 +2234,7 @@ document.getElementById('PayAll3dparty').addEventListener('click', () => {
     }
     console.log(arr);
     if (arr.length == 0) {
-        document.getElementById('INN3dparty').removeAttribute('required');
+        //document.getElementById('INN3dparty').removeAttribute('required');
         document.getElementById('FIO3dparty').removeAttribute('required');
         document.getElementById('Tel3dparty').removeAttribute('required');
         document.getElementById('Email3dparty').removeAttribute('required');
@@ -2264,63 +2266,78 @@ let form = document.getElementById('form');
      if ((sender+receiver+third) < +document.getElementById('totalhidden').value) {
          document.getElementById('warning').innerText = "Выберите все, что нужно оплатить!"
      } else {
-         let elements = form.elements;
-         let obj ={};
-         for(let i = 0 ; i < elements.length ; i++){
-             let item = elements.item(i);
-             if (item.checked){
-                 obj[item.id] = item.value;
-
-             }
-
+         for (let check of ThirdParty) {
+             check.name = check.name+'3dparty';
          }
-         obj['total'] = document.getElementById('PayAllSender').value;
-         AllPaymentChecks.forEach(check => {
-             check.forEach(ch => {
-                 ch.remove();
-             })
-         })
-         for (let check of checkboxes) {
-             check.remove();
+         document.getElementById('PayAllSender').name = document.getElementById('PayAllSender').name+'Sender';
+         for (let check of Receiver) {
+             check.name = check.name+'Receiver';
          }
-         for (let check of document.querySelectorAll("input[type=checkbox]")) {
-             check.remove();
+         document.getElementById('PayAllReceiver').name = document.getElementById('PayAllReceiver').name+'Receiver';
+         for (let check of Sender) {
+             check.name = check.name+'Sender';
          }
-         for (let check of document.querySelectorAll("input[type=radio]")) {
-             check.remove();
-         }
+         document.getElementById('PayAll3dparty').name = document.getElementById('PayAll3dparty').name+'3dparty';
 
-
-         for(let i = 0 ; i < elements.length ; i++){
-             let item = elements.item(i);
-
-             obj[item.id] = item.value;
-
-         }
-         let res = JSON.stringify(obj);
-         //let request = new XMLHttpRequest();
-          // строка с параметрами для отправки
-         // request.open("POST", "sendinfo.php");
-         // request.send(res);
-         //let data = request.responseXML;
-         //console.log(data);
-          let xmlhttp=new XMLHttpRequest();
-          xmlhttp.open("POST","index.php?c=page&act=mk_application", true);
-          //xmlhttp.responseType = 'text';
-          //xmlhttp.setRequestHeader("Content-type","application/json");
-          xmlhttp.send(res);
-
+         form.submit();
+         // let elements = form.elements;
+         // let obj ={};
+         // for(let i = 0 ; i < elements.length ; i++){
+         //     let item = elements.item(i);
+         //     if (item.checked){
+         //         obj[item.id] = item.value;
+         //
+         //     }
+         //
+         // }
+         // obj['total'] = document.getElementById('PayAllSender').value;
+         // AllPaymentChecks.forEach(check => {
+         //     check.forEach(ch => {
+         //         ch.remove();
+         //     })
+         // })
+         // for (let check of checkboxes) {
+         //     check.remove();
+         // }
+         // for (let check of document.querySelectorAll("input[type=checkbox]")) {
+         //     check.remove();
+         // }
+         // for (let check of document.querySelectorAll("input[type=radio]")) {
+         //     check.remove();
+         // }
          //
          //
-         // xmlhttp.onload = function() {
-         //     let responseObj = xmlhttp.responseText;
-         //     console.log(responseObj);
-         //     document.location.href = "index.php?c=page&act=success";
-         // };
-
-         // $.ajax({ type: 'POST', url: 'index.php?c=page&act=make', data: {json: res}, success : function(){
-         //         //document.location.href = "index.php?c=page&act=success";
-         //     }});
+         // for(let i = 0 ; i < elements.length ; i++){
+         //     let item = elements.item(i);
+         //
+         //     obj[item.id] = item.value;
+         //
+         // }
+         // let res = JSON.stringify(obj);
+         // //let request = new XMLHttpRequest();
+         //  // строка с параметрами для отправки
+         // // request.open("POST", "sendinfo.php");
+         // // request.send(res);
+         // //let data = request.responseXML;
+         // //console.log(data);
+         //  let xmlhttp=new XMLHttpRequest();
+         //  xmlhttp.open("POST","index.php?c=page&act=mk_application", true);
+         //  xmlhttp.responseType = 'text';
+         //  xmlhttp.setRequestHeader("Content-type","application/json");
+         //  xmlhttp.send(res);
+         //
+         //
+         // //
+         //   xmlhttp.onload = function() {
+         // let responseObj = xmlhttp.responseText;
+         //       console.log(JSON.parse(res));
+         //
+         //       //document.location.href = "index.php?c=page&act=success";
+         //   };
+         //
+         // // $.ajax({ type: 'POST', url: 'index.php?c=page&act=make', data: {json: res}, success : function(){
+         // //         //document.location.href = "index.php?c=page&act=success";
+         // //     }});
 
      }
 

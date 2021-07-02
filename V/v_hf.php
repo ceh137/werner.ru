@@ -45,7 +45,7 @@
 								<li><a href="/" class="menu-item">Главная</a></li>
 								<li><a href="#link" class="menu-item">Услуги</a></li>
 								<li><a href="#link" class="menu-item">Тарифы</a></li>
-								<li><a href="nextpage.php" class="menu-item">Оформить</a></li>
+								<li><a href="index.php?c=page&act=sendfirstform" class="menu-item">Оформить</a></li>
 								<li><a href="#link" class="menu-item">Отследить</a></li>
 								<li><a href="#link" class="menu-item">Контакты</a></li>
 							</ul>
@@ -68,7 +68,7 @@
 								<ul class="uk-navbar-nav uk-flex uk-flex-between">
 									<li><a href="#link" class="menu-item">Услуги</a></li>
 									<li><a href="#link" class="menu-item">Тарифы</a></li>
-									<li><a href="nextpage.php" class="menu-item">Оформить</a></li>
+									<li><a href="index.php?c=page&act=sendfirstform" class="menu-item">Оформить</a></li>
 									<li><a href="#link" class="menu-item">Отследить</a></li>
 									<li><a href="#link" class="menu-item">Контакты</a></li>
 								</ul>

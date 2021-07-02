@@ -21,26 +21,23 @@ class Page extends Base
         if ($this->isPost()) {
             $form = new FormModel();
             $arr  = $form->InsertIntoSecondForm($_POST);
-            $this->title = "Главная";
+            $this->title = "Оформление заказа";
             $this->content = $this->Template('V/v_form.php', $arr);
         } else {
-            header('Location: index.php?c=page&act=index');
+            $this->title = "Оформление заказа";
+            $this->content = $this->Template('V/v_form.php', array());
         }
 
     }
 
     public function act_mk_application() {
         if (isset($_POST))  {
+            $data = new FormModel();
+            $order_id = $data ->MakeApplication($_POST);
             $this->title = "Успех";
-            $this->content = $this->Template('V/v_success.php', array('data' => $_POST));
+            $this->content = $this->Template('V/v_success.php', array('order_id' => $order_id));
+
         }
     }
 
-    public function act_success() {
-        //$object = json_decode($_POST['json']);
-        //$data = new FormModel();
-        //$data ->MakeApplication($object);
-        $this->title = "Успех";
-        $this->content = $this->Template('V/v_success.php', array('data' => $object));
-    }
 }

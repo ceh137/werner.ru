@@ -7,7 +7,7 @@ class OrderModelDB extends DB
     private function insert_into_orders($args = array()) {
         return $this->Insert("INSERT INTO `orders` (del_method_id, sender_id, receiver_id, third_party_id, options_id, measurements_id, payments_id, address_to, address_from, city_to_id, city_from_id, prices_for_options_id, total, track_num, order_status_id, del_time_id) VALUES (:del_method_id, :sender_id, :receiver_id, :third_party_id, :options_id, :measurements_id, :payments_id, :address_to, :address_from, :city_to_id, :city_from_id, :prices_for_options_id, :total, :track_num, :order_status_id, :del_time_id)", $args);
     }
-    private function insert_into_users($args = array(), $who) {
+    private function insert_into_users($args = array(), $who='0') {
         if ($who == 'sender') {
             $sender = $this->Insert("INSERT INTO `users` (user_name, user_INN, user_tel, user_mail, user_company, status_id) values (:name, :INN, :tel, :mail, :company, :status_id)", $args);
             return $sender;
@@ -46,11 +46,11 @@ class OrderModelDB extends DB
     }
 
     private function check_users($args, $who) {
-        $user = $this->Select("SELECT `user_id` FROM `users` WHERE user_name = :name and user_mail = :mail AND user_tel = :tel AND user_INN = :INN AND user_company = :comp and status_id = :status_id", $args);
-        if (empty($user)) {
-            return $this->insert_into_users($args, $who);
+        $user = $this->Select("SELECT `user_id` FROM `users` WHERE user_name = :name and user_mail = :mail AND user_tel = :tel AND user_INN = :INN AND user_company = :company and status_id = :status_id", $args);
+        if ($user[0]['user_id']) {
+            return $user[0]['user_id'];
         } else {
-            return $user;
+            return $this->insert_into_users($args, $who);
         }
     }
 
@@ -61,103 +61,103 @@ class OrderModelDB extends DB
         $token = "41753b88fcd51e0b8fb2e83a08a0bfc0212637be";
         $dadata = new Dadata\DadataClient($token, null);
 
-        $from_city = (int)$obj->city1;
-        $to_city = (int)$obj->city2;
-        $method_delivery = isset($obj->ecorad) ? 1 : 2;
-        $to_address = isset($obj->toAddress);
-        $from_address = isset($obj->fromAddress);
-        $address_client_to = $obj->address_client_to;
-        $address_client_from = $obj->address_client_from;
+        $method_delivery = $obj['rad'] == 'express' ? 1 : 2;
 
+        $total = (int)$obj['totalhidden'];
 
-        $total = (int)$obj->total;
+        $from_city = $obj['from_city'];
+        $to_city = $obj['to_city'];
+
+        $address_client_from = $obj['address_from'] ? : null;
+        $address_client_to = $obj['address_to'] ? : null;
+
+        if ($from_city == 'Moscow') {
+            $from_city = 1;
+        } else {
+            $from_city = 2;
+        }
+        if ($to_city == 'Moscow') {
+            $to_city = 1;
+        } else {
+            $to_city = 2;
+        }
+
 
         $time_args = [
-            ':date_to' => $obj->dateTo,
-            ':date_from' => $obj->dateFrom,
-            ':time_from_del_from_addr' => $obj->Time1,
-            ':time_to_del_from_addr' => $obj->Time2,
-            ':time_from_del_to_addr' => $obj->Intime3,
-            ':time_to_del_to_addr' => $obj->Intime4
+            ':date_to' => $obj['date_to']? : null,
+            ':date_from' => $obj['date_from'] ? : null,
+            ':time_from_del_from_addr' => $obj['time1_from'] ? : NULL,
+            ':time_to_del_from_addr' => $obj['time1_until'] ? : NULL,
+            ':time_from_del_to_addr' => $obj['time2_from'] ? : NULL,
+            ':time_to_del_to_addr' => $obj['time2_until'] ? : NULL
             ];
-
+        $time_id = (int)$this->insert_into_del_time($time_args);
         // send time data
-        $time_id = $this->insert_into_del_time($time_args);
-
-        $worth = (int)$obj->worth;
-        $kilos = (int)$obj->kg;
-        $meters = (int)$obj->meters;
-        $pieces = (int)$obj->pieces;
-        $heaviest = (int)$obj->heaviest;
-        $longest = (int)$obj->longest;
 
         $measurements_args = [
-            ':kilos' => $kilos,
-            ':meters' => $meters,
-            ':pieces' => $pieces,
-            ':heaviest' => $heaviest,
-            ':longest' => $longest,
-            ':worth' => $worth,
+            ':kilos' => (int)$obj['kilos'],
+            ':meters' => (int)$obj['meters'],
+            ':pieces' => (int)$obj['pieces'],
+            ':heaviest' => (int)$obj['heaviest'],
+            ':longest' => (int)$obj['longest'],
+            ':worth' => (int)$obj['worth'] ? : 0
         ];
         // send measurements data
-        $measurement_id = $this->insert_into_measurements($measurements_args);
+        $measurement_id = (int)$this->insert_into_measurements($measurements_args);
 
         $sender_args = [
-            ':name' => $obj -> FIOsender,
-            ':INN' => $obj -> INNsender,
-            ':tel' => $obj -> Telsender,
-            ':mail' => $obj -> Emailsender,
-            ':comp' => $dadata->suggest("party", $obj -> INNsender)['0']['value'],
+            ':name' => $obj['FIOsender'],
+            ':INN' => $obj['INNsender'],
+            ':tel' => $obj['Telsender'],
+            ':mail' => $obj['Emailsender'],
+            ':company' => $dadata->suggest("party", $obj['INNsender'])['0']['value'],
             ':status_id' => 1
         ];
         // check sender, if there is no user with the same data, insert it.
-        $sender = $this->check_users($sender_args, 'sender');
+        $sender = (int)$this->check_users($sender_args, 'sender');
 
         $receiver_args = [
-            ':name' => $obj -> FIOreceiver,
-            ':INN' => $obj -> INNreceiver,
-            ':tel' => $obj -> Telreceiver,
-            ':mail' =>  $obj -> Emailreceiver,
-            ':comp' => $dadata->suggest("party", $obj -> INNreceiver)['0']['value'],
+            ':name' => $obj['FIOreceiver'],
+            ':INN' => $obj['INNreceiver'],
+            ':tel' => $obj['Telreceiver'],
+            ':mail' => $obj['Emailreceiver'],
+            ':company' => $dadata->suggest("party", $obj['INNreceiver'])['0']['value'],
             ':status_id' => 1
         ];
         // check receiver, if there is no user with the same data, insert it.
-        $receiver = $this->check_users($receiver_args, 'receiver');
+        $receiver = (int)$this->check_users($receiver_args, 'receiver');
+        if ($obj['FIO3dparty'] != '') {
+            $thirdParty_args = [
+                ':name' => $obj['FIO3dparty'],
+                ':INN' => $obj['INN3dparty'],
+                ':tel' => $obj['Tel3dparty'],
+                ':mail' => $obj['Email3dparty'],
+                ':company' => $dadata->suggest("party", $obj['INN3dparty'])['0']['value'],
+                ':status_id' => 1
+            ];
+            // check 3dparty, if there is no user with the same data, insert it.
+            $thirdParty = (int)$this->check_users($thirdParty_args,  '3dparty');
+        } else {
+            $thirdParty = null;
+        }
 
-        $thirdParty_args = [
-            ':name' => $obj -> FIO3dparty,
-            ':INN' => $obj -> INN3dparty,
-            ':tel' => $obj -> Tel3dparty,
-            ':mail' => $obj -> Email3dparty,
-            ':comp' => $dadata->suggest("party", $obj -> INN3dparty)['0']['value'],
-            ':status_id' => 1
-        ];
-        // check 3dparty, if there is no user with the same data, insert it.
-        $thirdParty = $this->check_users($thirdParty_args,  '3dparty');
 
         $price_for_options_args = [
-            ':price_for_del_to_addr' => (int)$obj->DelToAddress_price,
-            ':price_for_del_from_addr' => (int)$obj->DelFromAddress_price,
-            ':price_for_rig_pac' => (int)$obj->rigid_pac_price,
-            ':price_for_stretch_pac' => (int)$obj->stretch_price,
-            ':price_for_bort_pac' => (int)$obj->bort_price,
-            ':price_for_prr_to_address' => (int)$obj->PRRtoAddress_price,
-            ':price_for_prr_from_addr' => (int)$obj->PRRatAddress_price,
-            ':price_for_insurance' => (int)$obj->insurance_price,
-            ':term_trans' => (int)$obj->TT_price
+            ':price_for_del_to_addr' => (int)$obj['DelToAddress_price'] ? : 0,
+            ':price_for_del_from_addr' => (int)$obj['DelFromAddress_price'] ? : 0,
+            ':price_for_rig_pac' => (int)$obj['rigid_pac_price'] ? : 0,
+            ':price_for_stretch_pac' => (int)$obj['stretch_price'] ? : 0,
+            ':price_for_bort_pac' => (int)$obj['bort_price'] ? : 0,
+            ':price_for_prr_to_address' => (int)$obj['PRRtoAddress_price'] ? : 0,
+            ':price_for_prr_from_addr' => (int)$obj['PRRatAddress_price'] ? : 0,
+            ':price_for_insurance' => (int)$obj['insurance_price'] ? : 0,
+            ':price_for_term_trans' => (int)$obj['TT_price'] ? : 0
         ];
 
-        $price_for_options_id = $this->insert_into_prices_for_options($price_for_options_args);
+        $price_for_options_id = (int)$this->insert_into_prices_for_options($price_for_options_args);
 
 
-        $term_trans = 0;
-        $all = 0;
-        $pac = 0;
-        $ins = 0;
-        $from_addr_to_term = 0;
-        $from_term_to_addr = 0;
-        $prr_at_addr = 0;
-        $prr_to_addr = 0;
+
 
         $del_to_addr = 'Нет';
         $del_from_addr = 'Нет';
@@ -167,30 +167,35 @@ class OrderModelDB extends DB
         $insurance = 'Нет';
         $PRR_from_addr = 'Нет';
         $PRR_to_addr = 'Нет';
-
-        if ($obj->check1 == 'opt1') {
-            $del_to_addr = 'Да';
-        }
-        if ($obj->check2 == 'opt2') {
-            $del_from_addr = 'Да';
-        }
-        if ($obj->check3 == 'opt3') {
-            $rig_pac = 'Да';
-        }
-        if ($obj->check4 == 'opt4') {
-            $stretch_pac = 'Да';
-        }
-        if ($obj->check5 == 'opt5') {
-            $bort_pac = 'Да';
-        }
-        if ($obj->check6 == 'opt6') {
-            $insurance = 'Да';
-        }
-        if ($obj->check7 == 'opt7') {
-            $PRR_from_addr = 'Да';
-        }
-        if ($obj->check8 == 'opt8') {
-            $PRR_to_addr = 'Да';
+        foreach ($obj['options'] as $opt) {
+            switch ($opt) {
+                case 'opt1':
+                    $del_to_addr = 'Да';
+                    break;
+                case 'opt2':
+                    $del_from_addr = 'Да';
+                    break;
+                case 'opt3':
+                    $rig_pac = 'Да';
+                    break;
+                case 'opt4':
+                    $stretch_pac = 'Да';
+                    break;
+                case 'opt5':
+                    $bort_pac = 'Да';
+                    break;
+                case 'opt6':
+                    $insurance = 'Да';
+                    break;
+                case 'opt7':
+                    $PRR_from_addr = 'Да';
+                    break;
+                case 'opt8':
+                    $PRR_to_addr = 'Да';
+                    break;
+                default:
+                    break;
+            }
         }
 
         $options_args = [
@@ -204,71 +209,71 @@ class OrderModelDB extends DB
             ':insurance' => $insurance
         ];
 
-        $options_id = $this->insert_into_options($options_args);
+        $options_id = (int)$this->insert_into_options($options_args);
 
-        if (isset($obj->PayTermTransferSender)) {
+        if (isset($obj['PayTermTransferSender'])) {
             $who_pays_term_transfer = $sender;
-        } elseif (isset($obj->PayTermTransferReceiver)) {
+        } elseif (isset($obj['PayTermTransferReceiver'])) {
             $who_pays_term_transfer = $receiver;
-        } elseif (isset($obj->PayTermTransfer3dparty)) {
+        } elseif (isset($obj['PayTermTransfer3dparty'])) {
             $who_pays_term_transfer = $thirdParty;
         }
 
 
-        if (isset($obj->PayAllSender)) {
+        if (isset($obj['PayAllSender'])) {
             $who_pays_all = $sender;
-        } elseif (isset($obj->PayAllReceiver)) {
+        } elseif (isset($obj['PayAllReceiver'])) {
             $who_pays_all = $receiver;
-        } elseif (isset($obj->PayAll3dparty)) {
+        } elseif (isset($obj['PayAll3dparty'])) {
             $who_pays_all =  $thirdParty;
         }
 
-        if (isset($obj->PayPacSender)) {
+        if (isset($obj['PayPacSender'])) {
             $who_pays_pac = $sender;
-        } elseif (isset($obj->PayPacReceiver)) {
+        } elseif (isset($obj['PayPacReceiver'])) {
             $who_pays_pac = $receiver;
-        } elseif (isset($obj->PayPac3dparty)) {
+        } elseif (isset($obj['PayPac3dparty'])) {
             $who_pays_pac =  $thirdParty;
         }
 
-        if (isset($obj->PayInsSender)) {
+        if (isset($obj['PayInsSender'])) {
             $who_pays_ins = $sender;
-        } elseif (isset($obj->PayInsReceiver)) {
+        } elseif (isset($obj['PayInsReceiver'])) {
             $who_pays_ins = $receiver;
-        } elseif (isset($obj->PayIns3dparty)) {
+        } elseif (isset($obj['PayIns3dparty'])) {
             $who_pays_ins =  $thirdParty;
         }
 
 
-        if (isset($obj->PayFromAddressToTermSender)) {
+        if (isset($obj['PayFromAddressToTermSender'])) {
             $who_pays_from_addr_to_term = $sender;
-        } elseif (isset($obj->PayFromAddressToTermReceiver)) {
+        } elseif (isset($obj['PayFromAddressToTermReceiver'])) {
             $who_pays_from_addr_to_term = $receiver;
-        } elseif (isset($obj->PayFromAddressToTerm3dparty)) {
+        } elseif (isset($obj['PayFromAddressToTerm3dparty'])) {
             $who_pays_from_addr_to_term = $thirdParty;
         }
 
-        if (isset($obj->PayFromTermToAddressSender)) {
+        if (isset($obj['PayFromTermToAddressSender'])) {
             $who_pays_from_term_to_addr = $sender;
-        } elseif (isset($obj->PayFromTermToAddressReceiver)) {
+        } elseif (isset($obj['PayFromTermToAddressReceiver'])) {
             $who_pays_from_term_to_addr = $receiver;
-        } elseif (isset($obj->PayFromTermToAddress3dparty)) {
+        } elseif (isset($obj['PayFromTermToAddress3dparty'])) {
             $who_pays_from_term_to_addr =  $thirdParty;
         }
 
-        if (isset($obj->PayPRRatAddressSender)) {
+        if (isset($obj['PayPRRatAddressSender'])) {
             $who_pays_prr_at_addr = $sender;
-        } elseif (isset($obj->PayPRRatAddressReceiver)) {
+        } elseif (isset($obj['PayPRRatAddressReceiver'])) {
             $who_pays_prr_at_addr = $receiver;
-        } elseif (isset($obj->PayPRRatAddress3dparty)) {
+        } elseif (isset($obj['PayPRRatAddress3dparty'])) {
             $who_pays_prr_at_addr =  $thirdParty;
         }
 
-        if (isset($obj->PayPRRtoAddressSender)) {
+        if (isset($obj['PayPRRtoAddressSender'])) {
             $who_pays_prr_to_addr = $sender;
-        } elseif (isset($obj->PayPRRtoAddressReceiver)) {
+        } elseif (isset($obj['PayPRRtoAddressReceiver'])) {
             $who_pays_prr_to_addr = $receiver;
-        } elseif (isset($obj->PayPRRtoAddress3dparty)) {
+        } elseif (isset($obj['PayPRRtoAddress3dparty'])) {
             $who_pays_prr_to_addr =  $thirdParty;
         }
 
@@ -283,21 +288,21 @@ class OrderModelDB extends DB
             ':payment_insurance' => $who_pays_ins
         ];
 
-        $payment_id = $this->insert_into_payments($payments_args);
+        $payment_id = (int)$this->insert_into_payments($payments_args);
 
         $order_args = [
             ':del_method_id' => $method_delivery,
-            ':sender_id' => (int)$sender,
-            ':receiver_id' => (int)$receiver,
-            ':third_party_id' => (int)$thirdParty,
-            ':options_id' => (int)$options_id,
-            ':measurements_id' => (int)$measurement_id,
-            ':payments_id' => (int)$payment_id,
+            ':sender_id' => $sender,
+            ':receiver_id' => $receiver,
+            ':third_party_id' => $thirdParty,
+            ':options_id' => $options_id,
+            ':measurements_id' => $measurement_id,
+            ':payments_id' => $payment_id,
             ':address_to' =>  $address_client_to,
             ':address_from' => $address_client_from,
             ':city_to_id' => $to_city,
             ':city_from_id' => $from_city,
-            ':prices_for_options_id' => (int)$price_for_options_id,
+            ':prices_for_options_id' => $price_for_options_id,
             ':total' => $total,
             ':track_num' => '1232412123',
             ':order_status_id' => 1,

@@ -28,6 +28,7 @@ class DB
         try {
 
             $this->executeStatement($statement, $parameters);
+
             return $this->connection->lastInsertId();
 
         } catch (Exception $e) {

@@ -2,7 +2,7 @@
     <div class="uk-container">
         <h1 class="uk-h1">Оформить заявку</h1>
     </div>
-    <form action="index.php?c=page&act=sendfirstform" method="post" class="odrer-form" id="form">
+    <form action="index.php?c=page&act=mk_application" method="post" class="odrer-form" id="form">
         <div class="uk-container order-row-1">
             <div class="uk-h2">Дата и направление перевозки</div>
             <div class="uk-grid-medium uk-flex-center uk-grid" uk-height-match="target: > div > .uk-card" uk-grid>
@@ -116,7 +116,7 @@
                                     <input class="form-control uk-input my-2" id="addressTo" type="text" name="address_to" placeholder="Адрес" aria-label="адрес">
                                 </div>
                                 <div class="uk-width-1-1">
-                                    <input class="form-control uk-input" id="dateTo" type="date" placeholder="Дата" aria-label="адрес">
+                                    <input class="form-control uk-input" id="dateTo" name="date_to" type="date" placeholder="Дата" aria-label="адрес">
                                 </div>
                             </div>
                             <div class="form-row-check uk-margin-small">
@@ -154,7 +154,7 @@
                     <div>
                         <div class="uk-h4">Вес груза</div>
                         <div class="input-group">
-                            <input id="kg" type="number" class="form-control uk-input" name="kilos" value="<?= $kilos ?>" aria-label="Sizing example input"
+                            <input id="kg" type="number" class="form-control uk-input" name="kilos" value="<?= $kilos ? : 2.5  ?>" aria-label="Sizing example input"
                                    aria-describedby="labelkg">
                             <span class="input-group-text" id="labelkg">кг</span>
                         </div>
@@ -166,7 +166,7 @@
                     <div>
                         <div class="uk-h4">Обьем груза</div>
                         <div class="input-group">
-                            <input id="meters" type="number" class="form-control uk-input" name="meters" value="<?= $meters ?>" step="0.01" min="0" max="80"
+                            <input id="meters" type="number" class="form-control uk-input" name="meters" value="<?= $meters ? : 0.01 ?>" step="0.01" min="0" max="80"
                                    aria-label="Sizing example input" aria-describedby="labelmeters">
                             <span class="input-group-text" id="labelmeters">м<sup>3</sup></span>
                         </div>
@@ -322,7 +322,7 @@
 
                         <div class="form-row-check uk-margin-top">
                             <div class="form-check">
-                                <input class="form-check-input uk-radio PayAll" type="radio" name="PayAll[]" value="" id="PayAllSender">
+                                <input class="form-check-input uk-radio PayAll" type="radio" name="PayAll" value="" id="PayAllSender">
                                 <label class="form-check-label" for="PayAllSender">
                                     За все
                                 </label>
@@ -378,28 +378,28 @@
                         <div class="uk-margin-small">
                             <label for="INNreceiver" class="form-label uk-form-label">ИНН, если юр. лицо</label>
                             <div class="uk-form-controls">
-                                <input type="text" class="form-control uk-input" required id="INNreceiver" placeholder="ИНН">
+                                <input type="text" class="form-control uk-input" required id="INNreceiver" name="INNreceiver" placeholder="ИНН">
                             </div>
                         </div>
 
                         <div class="uk-margin-small">
                             <label for="сompReceiver" class="form-label uk-form-label">Название компании</label>
                             <div class="uk-form-controls">
-                                <input type="text" id="compReceiver" class="form-control uk-input" placeholder="Компания">
+                                <input type="text" id="compReceiver" name="compReceiver" class="form-control uk-input" placeholder="Компания">
                             </div>
                         </div>
 
                         <div class="uk-margin-small">
                             <label for="FIOreceiver" class="form-label uk-form-label">ФИО</label>
                             <div class="uk-form-controls">
-                                <input type="text" class="form-control uk-input" required id="FIOreceiver" placeholder="ФИО">
+                                <input type="text" class="form-control uk-input" required id="FIOreceiver" name="FIOreceiver" placeholder="ФИО">
                             </div>
                         </div>
 
                         <div class="uk-margin-small">
                             <label for="Telreceiver" class="form-label uk-form-label">Телефон</label>
                             <div class="uk-form-controls">
-                                <input type="tel" class="form-control uk-input" required id="Telreceiver"
+                                <input type="tel" class="form-control uk-input" required name="Telreceiver" id="Telreceiver"
                                        pattern="\+7\s?[\(]{0,1}9[0-9]{2}[\)]{0,1}\s?\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}"
                                        placeholder="+7(___)___-__-__">
                             </div>
@@ -408,13 +408,13 @@
                         <div class="uk-margin-small">
                             <label for="Emailreceiver" class="form-label uk-form-label">Email</label>
                             <div class="uk-form-controls">
-                                <input type="email" class="form-control uk-input" required id="Emailreceiver" placeholder="Email">
+                                <input type="email" class="form-control uk-input" required id="Emailreceiver" name="Emailreceiver" placeholder="Email">
                             </div>
                         </div>
 
                         <div class="form-row-check uk-margin-top">
                             <div class="form-check">
-                                <input class="form-check-input uk-radio PayAll " type="radio" name="PayAll[]" value="" id="PayAllReceiver">
+                                <input class="form-check-input uk-radio PayAll " type="radio"  name="PayAll" value="" id="PayAllReceiver">
                                 <label class="form-check-label" for="PayAllReceiver">
                                     За все
                                 </label>
@@ -471,28 +471,28 @@
                         <div class="uk-margin-small">
                             <label for="INN3dparty" class="form-label uk-form-label">ИНН, если юр. лицо</label>
                             <div class="uk-form-controls">
-                                <input type="text" class="form-control uk-input" id="INN3dparty" placeholder="ИНН">
+                                <input type="text" class="form-control uk-input" id="INN3dparty" name="INN3dparty" placeholder="ИНН">
                             </div>
                         </div>
 
                         <div class="uk-margin-small">
                             <label for="сomp3dparty" class="form-label uk-form-label">Название компании</label>
                             <div class="uk-form-controls">
-                                <input type="text" id="comp3dparty" class="form-control uk-input" placeholder="Компания">
+                                <input type="text" id="comp3dparty" name="comp3dparty" class="form-control uk-input" placeholder="Компания">
                             </div>
                         </div>
 
                         <div class="uk-margin-small">
                             <label for="FIO3dparty" class="form-label uk-form-label">ФИО</label>
                             <div class="uk-form-controls">
-                                <input type="text" class="form-control uk-input" id="FIO3dparty" placeholder="ФИО">
+                                <input type="text" class="form-control uk-input" id="FIO3dparty" name="FIO3dparty" placeholder="ФИО">
                             </div>
                         </div>
 
                         <div class="uk-margin-small">
                             <label for="Tel3dparty" class="form-label uk-form-label">Телефон</label>
                             <div class="uk-form-controls">
-                                <input type="tel" class="form-control uk-input" id="Tel3dparty"
+                                <input type="tel" class="form-control uk-input" id="Tel3dparty" name="Tel3dparty"
                                        pattern="\+7\s?[\(]{0,1}9[0-9]{2}[\)]{0,1}\s?\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}"
                                        placeholder="+7(___)___-__-__">
                             </div>
@@ -501,7 +501,7 @@
                         <div class="uk-margin-small">
                             <label for="Email3dparty" class="form-label uk-form-label">Email</label>
                             <div class="uk-form-controls">
-                                <input type="email" class="form-control uk-input" id="Email3dparty" placeholder="Email">
+                                <input type="email" class="form-control uk-input" id="Email3dparty" name="Email3dparty" placeholder="Email">
                             </div>
                         </div>
 
@@ -565,20 +565,20 @@
             </div>
         </div>
 
-        <input type="hidden" id="stretch_price">
-        <input type="hidden" id="rigid_pac_price">
-        <input type="hidden" id="bort_price">
-        <input type="hidden" id="TT_price">
-        <input type="hidden" id="insurance_price">
-        <input type="hidden" id="PRRtoAddress_price">
-        <input type="hidden" id="PRRatAddress_price">
-        <input type="hidden" id="DelToAddress_price">
-        <input type="hidden" id="DelFromAddress_price">
+        <input type="hidden" name="stretch_price" id="stretch_price">
+        <input type="hidden" name="rigid_pac_price" id="rigid_pac_price">
+        <input type="hidden" name="bort_price" id="bort_price">
+        <input type="hidden" name="TT_price" id="TT_price">
+        <input type="hidden" name="insurance_price" id="insurance_price">
+        <input type="hidden" name="PRRtoAddress_price" id="PRRtoAddress_price">
+        <input type="hidden" name="PRRatAddress_price" id="PRRatAddress_price">
+        <input type="hidden" name="DelToAddress_price" id="DelToAddress_price">
+        <input type="hidden" name="DelFromAddress_price" id="DelFromAddress_price">
 
-        <input type="hidden" id="amount_sender">
-        <input type="hidden" id="amount_receiver">
-        <input type="hidden" id="amount_3dparty">
-        <input type="hidden" id="totalhidden">
+        <input type="hidden" name="amount_sender" id="amount_sender">
+        <input type="hidden" name="amount_receiver" id="amount_receiver">
+        <input type="hidden" name="amount_3dparty" id="amount_3dparty">
+        <input type="hidden" name="totalhidden" id="totalhidden">
     </form>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>

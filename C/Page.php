@@ -28,4 +28,19 @@ class Page extends Base
         }
 
     }
+
+    public function act_mk_application() {
+        if (isset($_POST))  {
+            $this->title = "Успех";
+            $this->content = $this->Template('V/v_success.php', array('data' => $_POST));
+        }
+    }
+
+    public function act_success() {
+        //$object = json_decode($_POST['json']);
+        //$data = new FormModel();
+        //$data ->MakeApplication($object);
+        $this->title = "Успех";
+        $this->content = $this->Template('V/v_success.php', array('data' => $object));
+    }
 }

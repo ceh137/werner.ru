@@ -2298,25 +2298,29 @@ let form = document.getElementById('form');
 
          }
          let res = JSON.stringify(obj);
-         // let request = new XMLHttpRequest();
-         // // строка с параметрами для отправки
+         //let request = new XMLHttpRequest();
+          // строка с параметрами для отправки
          // request.open("POST", "sendinfo.php");
          // request.send(res);
          //let data = request.responseXML;
          //console.log(data);
-         let xmlhttp=new XMLHttpRequest();
-         xmlhttp.open("POST","index.php?c=page&act=sendform", );
-         xmlhttp.responseType = 'text';
-         xmlhttp.setRequestHeader("Content-type","application/json");
-         xmlhttp.send(res);
+          let xmlhttp=new XMLHttpRequest();
+          xmlhttp.open("POST","index.php?c=page&act=mk_application", true);
+          //xmlhttp.responseType = 'text';
+          //xmlhttp.setRequestHeader("Content-type","application/json");
+          xmlhttp.send(res);
 
-         
+         //
+         //
+         // xmlhttp.onload = function() {
+         //     let responseObj = xmlhttp.responseText;
+         //     console.log(responseObj);
+         //     document.location.href = "index.php?c=page&act=success";
+         // };
 
-         xmlhttp.onload = function() {
-             let responseObj = xmlhttp.responseText;
-             console.log(responseObj);
-             document.location.href = "success.html";
-         };
+         // $.ajax({ type: 'POST', url: 'index.php?c=page&act=make', data: {json: res}, success : function(){
+         //         //document.location.href = "index.php?c=page&act=success";
+         //     }});
 
      }
 

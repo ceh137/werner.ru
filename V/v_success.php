@@ -1,0 +1,2 @@
+<?= $title ?>
+<?php print_r($data) ?>

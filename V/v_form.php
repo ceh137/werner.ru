@@ -89,8 +89,8 @@
                         <div class="uk-h4 first-ttl">Куда</div>
                         <select id="city2" name="to_city" class="form-select uk-select form-select uk-select-lg mb-3"
                                 aria-label=".form-select uk-select-lg example">
-                            <option value="SPB" <?= $to_city=='SPB' ? 'selected' : '' ?>>Санкт-Петербург</option>
-                            <option value="Moscow" <?= $to_city=='Moscow' ? 'selected' : '' ?>>Москва</option>
+                            <option value="SPB" <?= $to_city == 'SPB' ? 'selected' : '' ?>>Санкт-Петербург</option>
+                            <option value="Moscow" <?= $to_city == 'Moscow' ? 'selected' : '' ?>>Москва</option>
                         </select>
                         <div class="uk-text-result uk-margin">
                             <div id="arrEco" class="uk-text"></div>
